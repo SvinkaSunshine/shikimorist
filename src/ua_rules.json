@@ -1,0 +1,23 @@
+[
+  {
+    "id": 1,
+    "priority": 1,
+    "action": {
+      "type": "modifyHeaders",
+      "requestHeaders": [
+        {
+          "header": "User-Agent",
+          "operation": "set",
+          "value": "shikimorist"
+        }
+      ]
+    },
+    "condition": {
+      "urlFilter": "*://shikimori.one/*",
+      "resourceTypes": [
+        "main_frame", "sub_frame", "xmlhttprequest",
+        "script", "stylesheet", "image", "media", "other"
+      ]
+    }
+  }
+]

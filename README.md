@@ -1,70 +1,64 @@
+# Shikimorist V2
+[![built with](/promote/claude.svg)](https://claude.ai/)
+---
 
-# Shikimorist
+Форк расширения [Shikimorist](https://github.com/Hokid/shikimorist) с поддержкой Firefox, исправленными ошибками и обновлённым дизайном. 
 
-Быстрый доступ к списку аниме на [shikimori](https://shikimori.one). Отмечай серии, ставь оценку, добавляй аниме не выходя со страницы онлайн просмотра.
+#### Для установки на Firefox: 
+Скачайте файл расширения (``.xpi``) на странице релизов, зайдите на страницу дополнений (``about:addons``) и выберите «Установить дополнение из файла». Расширение уже подписано через магазин дополнений.
 
-<div align="center">
-    <img src="promote/s_in_list.png" alt="Preview" width="882" />
-</div>
-<div>
-    <img src="promote/s_add_to_list.png" alt="Preview" width="150" />
-    <img src="promote/s_change_list.png" alt="Preview" width="150" />
-    <img src="promote/s_search.png" alt="Preview" width="150" />
-</div>
+#### Chrome и ему подобные:
+Вероятно, будет работать, но работоспособность не проверялась.
 
-##### Установка
+#### Описание:
+Быстрый доступ к списку аниме на [shikimori](https://shikimori.one). Отмечайте серии, ставьте оценки, добавляйте аниме, не выходя со страницы онлайн-просмотра.
 
- - [Расширение для Chrome](https://chrome.google.com/webstore/detail/shikimorist/ldpjmfifbppiopmahkfajeghaapgnbda)
+<p align="center">
+  <img src="promote/screen_base.png" width="30%">
+  <img src="promote/screen_search.png" width="30%">
+  <img src="promote/screen_siteunsuported.png" width="30%">
+</p>
 
-##### Как пользоваться
+##### Как пользоваться:
+Авторизуйтесь на Shikimori через расширение после установки. Перейдите на страницу аниме на сайте онлайн-просмотра (список поддерживаемых можно найти ниже) и откройте расширение — оно автоматически найдёт аниме в вашем списке, покажет статус, прогресс и оценку или предложит добавить его.
 
-Авторизуйся на shikimori через расширение после установки. Переходи на страницу аниме на сайте онлайн просмотра(список поддерживаемых можно найти ниже) и открой расширение - оно автоматически найдет аниме в твоем списке, покажет статус, прогресс и оценку или предложит добавить его.
-
-##### Возможности
-
+##### Возможности:
  - Добавление аниме в список
  - Обновление статуса просмотра
  - Удаление аниме из списка
  - Обновление оценки
- - Обновления счетчика серий/пересмотров
+ - Обновление счётчика серий/пересмотров
 
-##### Расширение поддерживает следующие сайты
-
- - [https://animego.org](https://animego.org)
- - [https://yummyanime.club](https://yummyanime.club)
- - [https://animestars.org](https://animestars.org)
- - [https://animebest.org](https://animebest.org)
- - [https://online.animedia.tv](https://online.animedia.tv)
- - [https://animevost.org](https://animevost.org)
- - [http://online.anilibria.life](http://online.anilibria.life)
- - [https://akari-anime.com](https://akari-anime.com)
- - [https://anime.anidub.life](https://anime.anidub.life)
-
-# Разработка
-
-### Установка
-
-```bash
-$ npm i
-```
-
-### Сборка
-
-Дев
-```bash
-$ npm run build-dev
-```
-
-Прод
-```bash
-$ npm run build
-```
+##### Расширение поддерживает следующие сайты:
+- [https://animego.org](https://animego.org)
+- [https://animego.me](https://animego.me)
+- [https://yummyanime.tv](https://yummyanime.tv)
+- [https://yummyanime.org](https://yummyanime.org)
+- [https://animestars.org](https://animestars.org)
+- [https://animebesst.org](https://animebesst.org)
+- [https://online.animedia.tv](https://online.animedia.tv)
+- [https://animevost.org](https://animevost.org)
+- [https://anilibria.life](https://anilibria.life)
+- [https://anilibria.tv](https://anilibria.tv)
+- [https://akari-anime.com](https://akari-anime.com)
+- [https://anidub.life](https://anidub.life)
+- [https://wikianime.tv](https://wikianime.tv)
+- [https://rezka.ag](https://rezka.ag)
+- [https://www.kinopoisk.ru](https://www.kinopoisk.ru)
+- [https://hd.kinopoisk.ru](https://hd.kinopoisk.ru)
 
 ### Как добавить поддержку ресурса(парсер)
-
-Этот способ не предполагает знаний всей кодовой базы расширения. Добавление парсера очень простая процедура.
-
-1. Напиши новый парсер `src/core/parser/collection/`. См. примеры других парсеров.
-2. Добавь новый парсер в список `src/core/parser/index.ts`
-3. Напиши тесты `src/core/parser/index.test.ts`
-4. Создай Pull Request
+Все парсеры хранятся в файле ``content_script.js``, для добавления нужно знать html элемент с названием тайтла, и его формат. Вот парсер на примере Анилибрии:
+```js
+{
+  id: 'anilibria',
+  test: (h) => h.endsWith('anilibria.tv'),
+  path: /^\/release\//,
+  parse(doc) {
+    const m = doc.querySelector('meta[property="og:title"]');
+    if (!m) return null;
+    const p = (m.getAttribute('content') || '').split('/');
+    return p[1] ? p[1].trim() : null;
+  }
+},
+```

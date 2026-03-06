@@ -1,0 +1,70 @@
+{
+  "name": "Shikimorist",
+  "short_name": "Shikimorist",
+  "version": "2.0.0",
+  "description": "Быстрый доступ к твоему списку аниме на Shikimori с поддержкой более 10 порталов онлайн просмотра.",
+  "manifest_version": 3,
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icons/16.png",
+      "48": "icons/48.png",
+      "128": "icons/128.png"
+    }
+  },
+  "icons": {
+    "16": "icons/16.png",
+    "48": "icons/48.png",
+    "128": "icons/128.png"
+  },
+  "permissions": [
+    "storage",
+    "tabs",
+    "declarativeNetRequest"
+  ],
+  "host_permissions": [
+    "*://shikimori.one/*",
+    "*://*.animego.org/*", "*://*.animego.me/*",
+    "*://*.yummyanime.tv/*", "*://*.yummyanime.org/*",
+    "*://animestars.org/*",
+    "*://*.animebesst.org/*",
+    "*://online.animedia.tv/*",
+    "*://animevost.org/*", "*://v2.vost.pw/*",
+    "*://anilibria.life/*", "*://*.anilibria.tv/*",
+    "*://akari-anime.com/*",
+    "*://anidub.life/*",
+    "*://wikianime.tv/*",
+    "*://rezka.ag/*",
+    "*://*.kinopoisk.ru/*"
+  ],
+  "declarative_net_request": {
+    "rule_resources": [{
+      "id": "ua_rules",
+      "enabled": true,
+      "path": "ua_rules.json"
+    }]
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "*://*.animego.org/*", "*://*.animego.me/*",
+        "*://*.yummyanime.tv/*", "*://*.yummyanime.org/*",
+        "*://animestars.org/*",
+        "*://*.animebesst.org/*",
+        "*://online.animedia.tv/*",
+        "*://animevost.org/*", "*://v2.vost.pw/*",
+        "*://anilibria.life/*", "*://*.anilibria.tv/*",
+        "*://akari-anime.com/*",
+        "*://anidub.life/*",
+        "*://wikianime.tv/*",
+        "*://rezka.ag/*",
+        "*://*.kinopoisk.ru/*"
+      ],
+      "js": ["content_script.js"],
+      "run_at": "document_idle"
+    }
+  ]
+}
