@@ -11,9 +11,7 @@ const SITES = [
   { name: 'Animevost',     url: 'https://animevost.org', vpn: true },
   { name: 'Vost.pw',       url: 'https://v2.vost.pw' },
   { name: 'AniLibria',     url: 'https://www.anilibria.tv', vpn: true },
-  { name: 'Akari Anime',   url: 'https://akari-anime.com' },
   { name: 'Anidub',        url: 'https://anidub.life' },
-  { name: 'Wikianime',     url: 'https://wikianime.tv' },
   { name: 'Rezka.ag',      url: 'https://rezka.ag', vpn: true },
   { name: 'Kinopoisk',     url: 'https://www.kinopoisk.ru' },
 ];
@@ -54,12 +52,7 @@ function lev(a, b) {
 }
 
 function bestMatch(query, list) {
-  if (list.length === 1) return list[0];
-  const isRu = /[а-яё]/i.test(query);
-  return list.reduce((best, a) => {
-    const name = isRu ? (a.russian || a.name || '') : (a.name || '');
-    return lev(query, name) < lev(query, isRu ? (best.russian || best.name || '') : (best.name || '')) ? a : best;
-  });
+  return list[0];
 }
 
 // ── State ─────────────────────────────────────────────────────────────────────
@@ -89,6 +82,9 @@ function renderAnime() {
 
   $('a-poster').src = anime.image ? HOST + anime.image.preview : '';
   $('a-name').textContent = anime.name || '';
+  $('a-name').style.cursor = 'pointer';
+  $('a-name').title = 'Открыть на Shikimori';
+  $('a-name').onclick = () => chrome.tabs.create({ url: HOST + anime.url });
   $('a-ru').textContent = anime.russian || '';
 
   const chips = $('a-chips');

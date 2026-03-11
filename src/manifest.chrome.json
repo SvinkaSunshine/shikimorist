@@ -1,7 +1,7 @@
 {
   "name": "Shikimorist",
   "short_name": "Shikimorist",
-  "version": "2.0.0",
+  "version": "2.0.3",
   "description": "Быстрый доступ к твоему списку аниме на Shikimori с поддержкой более 10 порталов онлайн просмотра.",
   "manifest_version": 3,
   "background": {
@@ -26,6 +26,8 @@
     "declarativeNetRequest"
   ],
   "host_permissions": [
+    "*://v4.anidub.shop/*",
+    "*://animesss.com/*",
     "*://shikimori.one/*",
     "*://*.animego.org/*", "*://*.animego.me/*",
     "*://*.yummyanime.tv/*", "*://*.yummyanime.org/*",
@@ -34,9 +36,7 @@
     "*://online.animedia.tv/*",
     "*://animevost.org/*", "*://v2.vost.pw/*",
     "*://anilibria.life/*", "*://*.anilibria.tv/*",
-    "*://akari-anime.com/*",
     "*://anidub.life/*",
-    "*://wikianime.tv/*",
     "*://rezka.ag/*",
     "*://*.kinopoisk.ru/*"
   ],
@@ -50,6 +50,8 @@
   "content_scripts": [
     {
       "matches": [
+        "*://v4.anidub.shop/*",
+        "*://animesss.com/*",
         "*://*.animego.org/*", "*://*.animego.me/*",
         "*://*.yummyanime.tv/*", "*://*.yummyanime.org/*",
         "*://animestars.org/*",
@@ -57,9 +59,7 @@
         "*://online.animedia.tv/*",
         "*://animevost.org/*", "*://v2.vost.pw/*",
         "*://anilibria.life/*", "*://*.anilibria.tv/*",
-        "*://akari-anime.com/*",
         "*://anidub.life/*",
-        "*://wikianime.tv/*",
         "*://rezka.ag/*",
         "*://*.kinopoisk.ru/*"
       ],

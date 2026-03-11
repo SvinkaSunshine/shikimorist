@@ -1,23 +1,32 @@
 # Shikimorist V2
 [![built with](/promote/claude.svg)](https://claude.ai/)
+[![available on](/promote/firefox.svg)](https://addons.mozilla.org/ru/firefox/addon/shikimorist/)
 ---
 
 Форк расширения [Shikimorist](https://github.com/Hokid/shikimorist) с поддержкой Firefox, исправленными ошибками и обновлённым дизайном. 
+<p align="center">
+  <img src="promote/screen_full.png" width="100%">
+</p>
+
 
 #### Для установки на Firefox: 
-Скачайте файл расширения (``.xpi``) на странице [релизов](https://github.com/SvinkaSunshine/shikimorist/releases), зайдите на страницу дополнений (``about:addons``) и выберите «Установить дополнение из файла». Расширение уже подписано через магазин дополнений.
+1. Установите расширение через [**магазин дополнений**](https://addons.mozilla.org/ru/firefox/addon/shikimorist/). 
+
+2. Или: скачайте файл расширение (``.xpi``) на странице [релизов](https://github.com/SvinkaSunshine/shikimorist/releases), зайдите на страницу дополнений (``about:addons``) и выберите «Установить дополнение из файла». Расширение уже подписано через магазин дополнений.
 
 #### Chrome и ему подобные:
-Вероятно, будет работать, но работоспособность не проверялась.
+Скачайте файл ``.zip`` на странице [релизов](https://github.com/SvinkaSunshine/shikimorist/releases). Вероятно, будет работать, но работоспособность не проверялась.
 
 #### Описание:
 Быстрый доступ к списку аниме на [shikimori](https://shikimori.one). Отмечайте серии, ставьте оценки, добавляйте аниме, не выходя со страницы онлайн-просмотра.
 
+
 <p align="center">
   <img src="promote/screen_base.png" width="30%">
   <img src="promote/screen_search.png" width="30%">
-  <img src="promote/screen_siteunsuported.png" width="30%">
+  <img src="promote/screen_siteunsupported.png" width="30%">
 </p>
+
 
 ##### Как пользоваться:
 Авторизуйтесь на Shikimori через расширение после установки. Перейдите на страницу аниме на сайте онлайн-просмотра (список поддерживаемых можно найти ниже) и откройте расширение — оно автоматически найдёт аниме в вашем списке, покажет статус, прогресс и оценку или предложит добавить его.
@@ -28,27 +37,25 @@
  - Удаление аниме из списка
  - Обновление оценки
  - Обновление счётчика серий/пересмотров
+ - Возможность для неподдерживаемых сайтов привязывать аниме к странице
 
 ##### Расширение поддерживает следующие сайты:
-- [https://animego.org](https://animego.org)
-- [https://animego.me](https://animego.me)
-- [https://yummyanime.tv](https://yummyanime.tv)
-- [https://yummyanime.org](https://yummyanime.org)
+- [https://animego.org](https://animego.org) | [https://animego.me](https://animego.me)
+- [https://yummyanime.tv](https://yummyanime.tv) | [https://yummyanime.org](https://yummyanime.org)
 - [https://animestars.org](https://animestars.org)
 - [https://animebesst.org](https://animebesst.org)
 - [https://online.animedia.tv](https://online.animedia.tv)
 - [https://animevost.org](https://animevost.org)
-- [https://anilibria.life](https://anilibria.life)
-- [https://anilibria.tv](https://anilibria.tv)
-- [https://akari-anime.com](https://akari-anime.com)
+- [https://anilibria.life](https://anilibria.life) | [https://anilibria.tv](https://anilibria.tv)
 - [https://anidub.life](https://anidub.life)
-- [https://wikianime.tv](https://wikianime.tv)
 - [https://rezka.ag](https://rezka.ag)
 - [https://www.kinopoisk.ru](https://www.kinopoisk.ru)
-- [https://hd.kinopoisk.ru](https://hd.kinopoisk.ru)
+ | [https://hd.kinopoisk.ru](https://hd.kinopoisk.ru)
+
+Для добавления сайта обращайтесь в [сюда](https://github.com/SvinkaSunshine/shikimorist/issues).
 
 ### Как добавить поддержку ресурса(парсер)
-Все парсеры хранятся в файле ``content_script.js``, для добавления нужно знать html элемент с названием тайтла, и его формат. Вот парсер на примере Анилибрии:
+Все парсеры хранятся в файле ``content_script.js``, для добавления нужно знать html элемент с названием тайтла, его формат и url. Вот парсер на примере Анилибрии:
 ```js
 {
   id: 'anilibria',

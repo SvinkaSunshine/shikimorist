@@ -1,7 +1,7 @@
 {
   "name": "Shikimorist",
   "short_name": "Shikimorist",
-  "version": "2.0.0",
+  "version": "2.0.3",
   "description": "Быстрый доступ к списку аниме на shikimori. Отмечай серии, ставь оценку, добавляй аниме не выходя со страницы онлайн просмотра.",
   "manifest_version": 2,
   "background": {
@@ -31,6 +31,8 @@
   "content_scripts": [
     {
       "matches": [
+        "*://v4.anidub.shop/*",
+        "*://animesss.com/*",
         "*://*.animego.org/*",
         "*://*.animego.me/*",
         "*://*.yummyanime.tv/*",
@@ -42,9 +44,7 @@
         "*://v2.vost.pw/*",
         "*://anilibria.life/*",
         "*://*.anilibria.tv/*",
-        "*://akari-anime.com/*",
         "*://anidub.life/*",
-        "*://wikianime.tv/*",
         "*://rezka.ag/*",
         "*://*.kinopoisk.ru/*"
       ],
