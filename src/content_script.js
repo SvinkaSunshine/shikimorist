@@ -100,17 +100,6 @@ const PARSERS = [
       return p[1] ? p[1].trim() : null;
     }
   },
-  // {
-  //   id: 'akari',
-  //   test: (h) => h === 'akari-anime.com',
-  //   path: /^\/movie\//,
-  //   parse(doc) {
-  //     const m = doc.querySelector('meta[property="og:title"]');
-  //     if (!m) return null;
-  //     const p = (m.getAttribute('content') || '').split('/');
-  //     return p[1] ? p[1].trim() : null;
-  //   }
-  // },
   {
     id: 'anidub',
     test: (h) => h === 'anidub.life' || h === 'v4.anidub.shop',
@@ -121,28 +110,6 @@ const PARSERS = [
       return null;
     }
   },
-  // {
-  //   id: 'wikianime',
-  //   test: (h) => h.endsWith('wikianime.tv'),
-  //   path: /^\/anime\//,
-  //   parse(doc) {
-  //     const clr = s => s.replace(/season|сезон/gi, '').trim();
-  //     const d = doc.querySelector('meta[property="og:description"]');
-  //     if (d) {
-  //       const m = (d.getAttribute('content') || '').match(/\(([^,]+),([^)]+)\)/);
-  //       if (m) {
-  //         const lat = [m[1], m[2]].find(s => s && /[a-z]/i.test(s));
-  //         return clr(lat || m[1] || m[2]);
-  //       }
-  //     }
-  //     const t = doc.querySelector('meta[property="og:title"]');
-  //     if (t) {
-  //       const p = (t.getAttribute('content') || '').split('|');
-  //       if (p[1]) return clr(p[1]);
-  //     }
-  //     return null;
-  //   }
-  // },
   {
     id: 'rezka',
     test: (h) => h === 'rezka.ag',
