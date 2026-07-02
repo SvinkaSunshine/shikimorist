@@ -1,6 +1,6 @@
 'use strict';
 
-const HOST = 'https://shikimori.one';
+const HOST = 'https://shikimori.io';
 const CLIENT_ID = 'd1Xgj-FYGKjj6EnnbCe4y9kTvL64jY_9Pwct5PaWymM';
 const CLIENT_SECRET = 'xBHDmmAJUjfpG7hFmtKF4X4PaGwsZwSxEmwsdJPlfMk';
 const REDIRECT_URI = 'urn:ietf:wg:oauth:2.0:oob';

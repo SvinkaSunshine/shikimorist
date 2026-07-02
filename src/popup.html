@@ -165,6 +165,37 @@ body {
   border-radius: 8px; padding: 7px 10px; font-size: 12px; outline: none; cursor: pointer;
 }
 
+/* Custom select */
+.custom-sel { position: relative; }
+.cs-trigger {
+  width: 100%; background: var(--c2); border: 1px solid var(--sep);
+  color: var(--text); border-radius: 8px; padding: 7px 10px;
+  font-size: 12px; cursor: pointer; display: flex; align-items: center;
+  gap: 7px; transition: border-color .15s;
+}
+.cs-trigger:hover, .custom-sel.open .cs-trigger { border-color: var(--acc); }
+.cs-icon svg { width: 13px; height: 13px; fill: none; stroke: var(--acc);
+  stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.cs-label { flex: 1; text-align: left; }
+.cs-arrow { width: 13px; height: 13px; fill: none; stroke: var(--muted);
+  stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+  transition: transform .2s; flex-shrink: 0; }
+.custom-sel.open .cs-arrow { transform: rotate(180deg); }
+.cs-dropdown {
+  display: none; position: absolute; z-index: 20; top: calc(100% + 4px);
+  left: 0; right: 0; background: var(--c2); border: 1px solid var(--sep);
+  border-radius: 8px; overflow: hidden; box-shadow: 0 6px 20px rgba(0,0,0,.4);
+}
+.custom-sel.open .cs-dropdown { display: block; }
+.cs-opt {
+  display: flex; align-items: center; gap: 8px; padding: 8px 12px;
+  font-size: 12px; cursor: pointer; transition: background .1s;
+}
+.cs-opt:hover { background: var(--c3); }
+.cs-opt svg { width: 13px; height: 13px; fill: none; stroke: var(--muted);
+  stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
+.cs-opt.active svg { stroke: var(--acc); }
+
 /* Stepper */
 .row { display: flex; align-items: center; justify-content: space-between; }
 .row + .row { margin-top: 6px; }
@@ -187,6 +218,14 @@ body {
   border-radius: 7px; padding: 8px 4px; font-size: 11px; cursor: pointer; transition: all .15s;
 }
 .add-btn:hover { border-color: var(--acc); color: var(--acc); }
+.add-btn {
+  /* existing styles... */
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+}
+.add-btn svg {
+  width: 12px; height: 12px; fill: none; stroke: currentColor;
+  stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0;
+}
 
 /* Remove */
 .rem-wrap { padding: 0 14px 10px; }
@@ -244,14 +283,16 @@ body {
 <!-- EMPTY -->
 <div id="s-empty" class="scr">
   <div class="hdr">
-    <a class="hdr-logo" href="https://shikimori.one" target="_blank"><img src="icons/48.png" alt=""/><b>Shikimori</b>st</a>
+    <a class="hdr-logo" href="https://shikimori.io" target="_blank"><img src="icons/48.png" alt=""/><b>Shikimori</b>st</a>
     <button class="ibtn" id="e-search" title="Поиск"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.4-4.4"/></svg></button>
     <button class="ibtn" id="e-logout" title="Выйти"><svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></button>
   </div>
   <div class="body">
-    <div class="empty-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>
-    <div class="empty-ttl">Сайт не поддерживается</div>
-    <div class="empty-sub">Откройте поддерживаемый сайт с аниме или найдите вручную.</div>
+    <div class="empty-icon">
+      <svg id="empty-icon-svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+    </div>
+    <div class="empty-ttl" id="empty-ttl">Сайт не поддерживается</div>
+    <div class="empty-sub" id="empty-sub">Откройте поддерживаемый сайт с аниме или найдите вручную.</div>
     <button class="btn-ghost" id="e-search2">Поиск аниме</button>
   </div>
   <div class="footer"><a href="#" id="e-sites">Поддерживаемые сайты</a></div>
@@ -270,7 +311,7 @@ body {
 <!-- ANIME -->
 <div id="s-anime" class="scr">
   <div class="hdr">
-    <a class="hdr-logo" href="https://shikimori.one" target="_blank"><img src="icons/48.png" alt=""/><b>Shikimori</b>st</a>
+    <a class="hdr-logo" href="https://shikimori.io" target="_blank"><img src="icons/48.png" alt=""/><b>Shikimori</b>st</a>
     <button class="ibtn" id="a-search" title="Поиск"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.4-4.4"/></svg></button>
     <button class="ibtn" id="a-logout" title="Выйти"><svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></button>
   </div>
@@ -292,16 +333,34 @@ body {
   <!-- in-list controls -->
   <div id="in-list">
     <div class="rsec">
-      <div class="rsec-lbl">Статус</div>
-      <select class="sel" id="r-status">
-        <option value="watching">▶ Смотрю</option>
-        <option value="planned">📋 Запланировано</option>
-        <option value="completed">✓ Просмотрено</option>
-        <option value="on_hold">⏸ Отложено</option>
-        <option value="dropped">✕ Брошено</option>
-        <option value="rewatching">↺ Пересматриваю</option>
-      </select>
-    </div>
+    <div class="custom-sel" id="r-status">
+      <button class="cs-trigger" id="cs-trigger">
+        <span class="cs-icon" id="cs-icon"></span>
+        <span class="cs-label" id="cs-label">Смотрю</span>
+        <svg class="cs-arrow" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <div class="cs-dropdown" id="cs-dropdown">
+        <div class="cs-opt" data-v="watching">
+          <svg viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg>Смотрю
+        </div>
+        <div class="cs-opt" data-v="planned">
+          <svg viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>Запланировано
+        </div>
+        <div class="cs-opt" data-v="completed">
+          <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Просмотрено
+        </div>
+        <div class="cs-opt" data-v="on_hold">
+          <svg viewBox="0 0 24 24"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>Отложено
+        </div>
+        <div class="cs-opt" data-v="dropped">
+          <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/></svg>Брошено
+        </div>
+        <div class="cs-opt" data-v="rewatching">
+          <svg viewBox="0 0 24 24"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-4.1"/></svg>Пересматриваю
+        </div>
+      </div>
+    </div>  
+</div>
     <div class="rsec">
       <div class="rsec-lbl">Серии</div>
       <div class="row">
@@ -332,12 +391,24 @@ body {
   <!-- not-in-list controls -->
   <div id="no-list">
     <div class="add-grid">
-      <button class="add-btn" data-s="watching">▶ Смотрю</button>
-      <button class="add-btn" data-s="planned">📋 Запланировано</button>
-      <button class="add-btn" data-s="completed">✓ Просмотрено</button>
-      <button class="add-btn" data-s="on_hold">⏸ Отложено</button>
-      <button class="add-btn" data-s="dropped">✕ Брошено</button>
-      <button class="add-btn" data-s="rewatching">↺ Пересматриваю</button>
+      <button class="add-btn" data-s="watching">
+        <svg viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg>Смотрю
+      </button>
+      <button class="add-btn" data-s="planned">
+        <svg viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>Запланировано
+      </button>
+      <button class="add-btn" data-s="completed">
+        <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Просмотрено
+      </button>
+      <button class="add-btn" data-s="on_hold">
+        <svg viewBox="0 0 24 24"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>Отложено
+      </button>
+      <button class="add-btn" data-s="dropped">
+        <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/></svg>Брошено
+      </button>
+      <button class="add-btn" data-s="rewatching">
+        <svg viewBox="0 0 24 24"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-4.1"/></svg>Пересматриваю
+      </button>
     </div>
   </div>
 </div>

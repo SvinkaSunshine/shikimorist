@@ -1,6 +1,6 @@
 'use strict';
 
-const HOST = 'https://shikimori.one';
+const HOST = 'https://shikimori.io';
 
 const SITES = [
   { name: 'AnimeGo',       url: 'https://animego.org' },
@@ -52,7 +52,12 @@ function lev(a, b) {
 }
 
 function bestMatch(query, list) {
-  return list[0];
+  if (list.length === 1) return list[0];
+  const isRu = /[а-яё]/i.test(query);
+  return list.reduce((best, a) => {
+    const name = isRu ? (a.russian || a.name || '') : (a.name || '');
+    return lev(query, name) < lev(query, isRu ? (best.russian || best.name || '') : (best.name || '')) ? a : best;
+  });
 }
 
 // ── State ─────────────────────────────────────────────────────────────────────
@@ -74,6 +79,24 @@ function show(name) {
   if (el) el.classList.add('show');
 }
 
+  // Custom select
+  const STATUS_ICONS = {
+    watching:   `<svg viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg>`,
+    planned:    `<svg viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>`,
+    completed:  `<svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>`,
+    on_hold:    `<svg viewBox="0 0 24 24"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>`,
+    dropped:    `<svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/></svg>`,
+    rewatching: `<svg viewBox="0 0 24 24"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-4.1"/></svg>`,
+  };
+
+  function csSetValue(val, label) {
+    $('cs-icon').innerHTML = STATUS_ICONS[val] || '';
+    $('cs-label').textContent = label;
+    document.querySelectorAll('.cs-opt').forEach(o =>
+      o.classList.toggle('active', o.dataset.v === val)
+    );
+  }
+
 // ── Render anime ──────────────────────────────────────────────────────────────
 
 function renderAnime() {
@@ -82,9 +105,6 @@ function renderAnime() {
 
   $('a-poster').src = anime.image ? HOST + anime.image.preview : '';
   $('a-name').textContent = anime.name || '';
-  $('a-name').style.cursor = 'pointer';
-  $('a-name').title = 'Открыть на Shikimori';
-  $('a-name').onclick = () => chrome.tabs.create({ url: HOST + anime.url });
   $('a-ru').textContent = anime.russian || '';
 
   const chips = $('a-chips');
@@ -99,7 +119,12 @@ function renderAnime() {
     $('in-list').style.display = '';
     $('no-list').style.display = 'none';
 
-    $('r-status').value = rate.status || 'watching';
+    const statusLabels = {
+      watching: 'Смотрю', planned: 'Запланировано', completed: 'Просмотрено',
+      on_hold: 'Отложено', dropped: 'Брошено', rewatching: 'Пересматриваю'
+    };
+    const st = rate.status || 'watching';
+    csSetValue(st, statusLabels[st] || st);
     $('ep-v').textContent = rate.episodes || 0;
     $('ep-of').textContent = ep ? `/${ep}` : '/—';
     $('rw-v').textContent = rate.rewatches || 0;
@@ -112,12 +137,20 @@ function renderAnime() {
       b.textContent = '★';
       b.dataset.n = i;
       b.addEventListener('click', () => rateUpdate({ score: +b.dataset.n }));
+      b.addEventListener('mouseenter', () => previewStars(i));
       stars.appendChild(b);
     }
+    stars.addEventListener('mouseleave', () => previewStars(rate.score || 0));
   } else {
     $('in-list').style.display = 'none';
     $('no-list').style.display = '';
   }
+}
+
+function previewStars(n) {
+  document.querySelectorAll('#stars .star').forEach(el => {
+    el.classList.toggle('on', +el.dataset.n <= n);
+  });
 }
 
 // ── Rate API ──────────────────────────────────────────────────────────────────
@@ -225,7 +258,20 @@ async function init() {
     });
   } catch { pd = null; }
 
-  if (!pd || pd.found === false) { show('empty'); return; }
+  if (!pd) {
+    $('empty-icon-svg').innerHTML = `<circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>`;
+    $('empty-ttl').textContent = 'Сайт не поддерживается';
+    $('empty-sub').textContent = 'Откройте поддерживаемый сайт с аниме или найдите вручную.';
+    show('empty');
+    return;
+  }
+  if (pd.found === false) {
+    $('empty-ttl').textContent = 'Аниме не обнаружено';
+    $('empty-icon-svg').innerHTML = `<circle cx="11" cy="11" r="8"/><path d="m21 21-4.4-4.4"/>`;
+    $('empty-sub').textContent = 'Перейдите на страницу с аниме или найдите его вручную.';
+    show('empty');
+    return;
+  }
 
   if (pd.type === 'cached') {
     try {
@@ -305,10 +351,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Attach toggle
   $('a-attach').addEventListener('click', toggleAttach);
-
-  // Status
-  $('r-status').addEventListener('change', e => rateUpdate({ status: e.target.value }));
-
+  
   // Episodes
   $('ep-dec').addEventListener('click', () => {
     const v = +$('ep-v').textContent;
@@ -329,6 +372,21 @@ document.addEventListener('DOMContentLoaded', () => {
     b.addEventListener('click', () => rateCreate(b.dataset.s));
   });
 
+  // Status select
+  $('cs-trigger').addEventListener('click', () => {
+    $('r-status').classList.toggle('open');
+  });
+  document.addEventListener('click', e => {
+    if (!$('r-status').contains(e.target)) $('r-status').classList.remove('open');
+  });
+  document.querySelectorAll('.cs-opt').forEach(o => {
+    o.addEventListener('click', () => {
+      $('r-status').classList.remove('open');
+      csSetValue(o.dataset.v, o.textContent.trim());
+      rateUpdate({ status: o.dataset.v });
+    });
+  });
+
   // Delete rate
   $('r-del').addEventListener('click', rateDelete);
 
@@ -344,6 +402,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   $('st-back').addEventListener('click', () => show(ST.prev || 'empty'));
 
+  
   // Background auth updates
   chrome.runtime.onMessage.addListener(msg => {
     if (msg.event === 'auth_changed') {

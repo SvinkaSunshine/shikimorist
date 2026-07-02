@@ -144,39 +144,39 @@ function detect(doc) {
   return null;
 }
 
-// ── Page key (strip protocol) ─────────────────────────────────────────────────
-
+// ── Page key (strip protocol and hash) ──────────────────────────────────────
+ 
 function pageKey() {
-  return location.href.replace(/^https?:\/\//, '');
+  return (location.origin + location.pathname + location.search).replace(/^https?:\/\//, '');
 }
-
+ 
 // ── Message listener ───────────────────────────────────────────────────────────
-
+ 
 chrome.runtime.onMessage.addListener((msg, _sender, respond) => {
-
+ 
   if (msg.type === 'page_data') {
     const key = pageKey();
-
+ 
     chrome.runtime.sendMessage({ type: 'cache_get', url: key }, cached => {
       if (chrome.runtime.lastError) { respond({ found: false }); return; }
       if (cached && cached.anime) { respond({ type: 'cached', anime: cached.anime }); return; }
-
+ 
       const tryParse = () => {
         const name = detect(document);
         if (name) respond({ type: 'name', name });
         else respond({ found: false });
       };
-
+ 
       if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', tryParse, { once: true });
       } else {
         tryParse();
       }
     });
-
+ 
     return true;
   }
-
+ 
   if (msg.type === 'cache_set') {
     const key = pageKey();
     chrome.runtime.sendMessage({ type: 'cache_set', url: key, anime: msg.anime }, () => respond({ ok: true }));

@@ -1,7 +1,7 @@
 {
   "name": "Shikimorist",
   "short_name": "Shikimorist",
-  "version": "2.0.3",
+  "version": "2.0.4",
   "description": "Быстрый доступ к списку аниме на shikimori. Отмечай серии, ставь оценку, добавляй аниме не выходя со страницы онлайн просмотра.",
   "manifest_version": 2,
   "background": {
@@ -55,7 +55,7 @@
   "browser_specific_settings": {
     "gecko": {
       "id": "{2b4f6305-a6db-4491-8187-a17cafe03927}",
-      "strict_min_version": "58.0",
+      "strict_min_version": "79.0",
       "data_collection_permissions": {
         "required": ["none"],
         "optional": []
