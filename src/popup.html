@@ -18,6 +18,8 @@
   --green: #3ec47a;
   --blue: #5b8dee;
   --gold: #f5c842;
+  --purple: #c239f9;
+  --orange: #f98939;
   --red: #e05065;
   --sep: rgba(255,255,255,0.07);
   --r: 10px;
@@ -135,9 +137,11 @@ body {
 .card-chips { display: flex; gap: 4px; flex-wrap: wrap; margin-top: 5px; }
 .chip { background: var(--c2); border-radius: 5px; padding: 2px 6px; font-size: 10px; color: var(--muted); }
 .chip.gold { background: rgba(245,200,66,.12); color: var(--gold); }
+.chip.purple { background: rgba(194,57,249,.12); color: var(--purple); }
 .chip.green { background: rgba(62,196,122,.12); color: var(--green); }
 .chip.blue { background: rgba(91,141,238,.12); color: var(--blue); }
 .chip.red { background: rgba(224,80,101,.12); color: var(--red); }
+.chip.orange { background: rgba(249,137,57,.12); color: var(--orange); }
 .chip.acc { background: rgba(232,65,122,.12); color: var(--acc); }
 
 /* Attach row */
@@ -174,6 +178,7 @@ body {
   gap: 7px; transition: border-color .15s;
 }
 .cs-trigger:hover, .custom-sel.open .cs-trigger { border-color: var(--acc); }
+.cs-icon { line-height: 0; }
 .cs-icon svg { width: 13px; height: 13px; fill: none; stroke: var(--acc);
   stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 .cs-label { flex: 1; text-align: left; }
@@ -272,6 +277,9 @@ body {
 
 <!-- AUTH -->
 <div id="s-auth" class="scr">
+  <a class="ibtn" href="https://github.com/SvinkaSunshine/shikimorist" target="_blank" title="Нашли ошибку или проблему? Вам сюда -> GitHub" style="align-self:flex-end;margin:-20px -12px 0 0;">
+    <svg viewBox="0 0 24 24"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+  </a>
   <div class="auth-icon">
     <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
   </div>
@@ -283,7 +291,13 @@ body {
 <!-- EMPTY -->
 <div id="s-empty" class="scr">
   <div class="hdr">
-    <a class="hdr-logo" href="https://shikimori.io" target="_blank"><img src="icons/48.png" alt=""/><b>Shikimori</b>st</a>
+    <a class="hdr-logo" href="https://shikimori.io" target="_blank">
+      <img src="icons/48.png" alt=""/>
+      <span><b>Shikimori</b>st</span>
+    </a>
+    <a class="ibtn" href="https://github.com/SvinkaSunshine/shikimorist" target="_blank" title="Нашли ошибку или проблему? Вам сюда -> GitHub">
+      <svg viewBox="0 0 24 24"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+    </a>
     <button class="ibtn" id="e-search" title="Поиск"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.4-4.4"/></svg></button>
     <button class="ibtn" id="e-logout" title="Выйти"><svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></button>
   </div>
@@ -311,7 +325,13 @@ body {
 <!-- ANIME -->
 <div id="s-anime" class="scr">
   <div class="hdr">
-    <a class="hdr-logo" href="https://shikimori.io" target="_blank"><img src="icons/48.png" alt=""/><b>Shikimori</b>st</a>
+    <a class="hdr-logo" href="https://shikimori.io" target="_blank">
+      <img src="icons/48.png" alt=""/>
+      <span><b>Shikimori</b>st</span>
+    </a>
+    <a class="ibtn" href="https://github.com/SvinkaSunshine/shikimorist" target="_blank" title="Нашли ошибку или проблему? Вам сюда -> GitHub">
+      <svg viewBox="0 0 24 24"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+    </a>
     <button class="ibtn" id="a-search" title="Поиск"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.4-4.4"/></svg></button>
     <button class="ibtn" id="a-logout" title="Выйти"><svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></button>
   </div>
@@ -383,7 +403,10 @@ body {
     </div>
     <div class="rsec">
       <div class="rsec-lbl">Оценка</div>
-      <div class="stars" id="stars"></div>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <div class="stars" id="stars"></div>
+        <span id="score-val" style="font-size:20px;font-weight:700;color:var(--gold);min-width:20px;line-height:1;visibility:hidden;">—</span>
+      </div>
     </div>
     <div class="rem-wrap"><button class="rem-btn" id="r-del">Удалить из списка</button></div>
   </div>

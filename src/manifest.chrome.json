@@ -1,7 +1,7 @@
 {
   "name": "Shikimorist",
   "short_name": "Shikimorist",
-  "version": "2.0.4",
+  "version": "2.0.5",
   "description": "Быстрый доступ к твоему списку аниме на Shikimori с поддержкой более 10 порталов онлайн просмотра.",
   "manifest_version": 3,
   "background": {

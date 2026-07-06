@@ -119,10 +119,19 @@ function sign_in() {
   return new Promise((resolve, reject) => {
     authResolve = resolve;
     authReject  = reject;
-    chrome.tabs.create({ active: true, url: auth_build_url() }, tab => {
-      authTabId = tab.id;
-      chrome.tabs.onUpdated.addListener(tab_on_update);
-      chrome.tabs.onRemoved.addListener(tab_on_remove);
+    chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
+      const prevTabId = tabs[0] ? tabs[0].id : null;
+      chrome.tabs.create({ active: true, url: auth_build_url() }, tab => {
+        authTabId = tab.id;
+        chrome.tabs.onUpdated.addListener(tab_on_update);
+        chrome.tabs.onRemoved.addListener(tab_on_remove);
+
+        const origResolve = authResolve;
+        authResolve = (val) => {
+          if (prevTabId) chrome.tabs.update(prevTabId, { active: true }, () => {});
+          origResolve(val);
+        };
+      });
     });
   });
 }

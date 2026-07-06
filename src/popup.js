@@ -52,12 +52,7 @@ function lev(a, b) {
 }
 
 function bestMatch(query, list) {
-  if (list.length === 1) return list[0];
-  const isRu = /[а-яё]/i.test(query);
-  return list.reduce((best, a) => {
-    const name = isRu ? (a.russian || a.name || '') : (a.name || '');
-    return lev(query, name) < lev(query, isRu ? (best.russian || best.name || '') : (best.name || '')) ? a : best;
-  });
+  return list[0];
 }
 
 // ── State ─────────────────────────────────────────────────────────────────────
@@ -90,7 +85,11 @@ function show(name) {
   };
 
   function csSetValue(val, label) {
-    $('cs-icon').innerHTML = STATUS_ICONS[val] || '';
+    const doc = new DOMParser()
+      .parseFromString(`<div>${STATUS_ICONS[val] || ''}</div>`, 'text/html');
+    const svgEl = doc.querySelector('svg');
+    if (svgEl) $('cs-icon').replaceChildren(svgEl);
+    else $('cs-icon').replaceChildren();
     $('cs-label').textContent = label;
     document.querySelectorAll('.cs-opt').forEach(o =>
       o.classList.toggle('active', o.dataset.v === val)
@@ -105,14 +104,64 @@ function renderAnime() {
 
   $('a-poster').src = anime.image ? HOST + anime.image.preview : '';
   $('a-name').textContent = anime.name || '';
+  $('a-name').style.cursor = 'pointer';
+  $('a-name').title = 'Открыть на Shikimori';
+  $('a-name').onclick = () => chrome.tabs.create({ url: HOST + anime.url });
   $('a-ru').textContent = anime.russian || '';
 
   const chips = $('a-chips');
   chips.innerHTML = '';
-  if (anime.score > 0) chips.innerHTML += `<span class="chip gold">★ ${parseFloat(anime.score).toFixed(1)}</span>`;
   const ep = anime.episodes || anime.episodes_aired;
-  if (ep) chips.innerHTML += `<span class="chip">${ep} эп.</span>`;
+  if (anime.score > 0) {
+    const s = document.createElement('span');
+    s.className = 'chip gold';
+    s.textContent = `★ ${parseFloat(anime.score).toFixed(1)}`;
+    chips.appendChild(s);
+  }
 
+  const STATUS_CHIP = {
+    anons:    { label: 'Анонс',   cls: 'blue' },
+    ongoing:  { label: 'Онгоинг', cls: 'acc' },
+    released: { label: 'Вышло',   cls: 'green' },
+  };
+  if (anime.status && STATUS_CHIP[anime.status]) {
+    const s = document.createElement('span');
+    s.className = 'chip ' + STATUS_CHIP[anime.status].cls;
+    s.textContent = STATUS_CHIP[anime.status].label;
+    chips.appendChild(s);
+  }
+
+  if (anime.next_episode_at) {
+    const date = new Date(anime.next_episode_at);
+    const label = date.toLocaleDateString('ru-RU', { day: 'numeric', month: 'short' });
+    const s = document.createElement('span');
+    s.className = 'chip orange';
+    s.title = 'Следующая серия';
+    s.textContent = `📅 ${label}`;
+    chips.appendChild(s);
+  }
+
+  const KIND_CHIP = {
+    tv:      { label: 'TV',    cls: 'blue' },
+    movie:   { label: 'Фильм', cls: 'purple' },
+    ova:     { label: 'OVA',   cls: 'green' },
+    ona:     { label: 'ONA',   cls: 'green' },
+    special: { label: 'Спешл', cls: '' },
+    music:   { label: 'Клип',  cls: '' },
+  };
+  if (anime.kind && KIND_CHIP[anime.kind]) {
+    const s = document.createElement('span');
+    s.className = 'chip' + (KIND_CHIP[anime.kind].cls ? ' ' + KIND_CHIP[anime.kind].cls : '');
+    s.textContent = KIND_CHIP[anime.kind].label;
+    chips.appendChild(s);
+  }
+
+  if (ep) {
+    const s = document.createElement('span');
+    s.className = 'chip';
+    s.textContent = `${ep} эп.`;
+    chips.appendChild(s);
+  }
   $('a-attach').className = 'tog' + (attached ? ' on' : '');
 
   if (rate) {
@@ -125,6 +174,8 @@ function renderAnime() {
     };
     const st = rate.status || 'watching';
     csSetValue(st, statusLabels[st] || st);
+    $('score-val').textContent = rate.score || '—';
+    $('score-val').style.visibility = rate.score ? 'visible' : 'hidden';
     $('ep-v').textContent = rate.episodes || 0;
     $('ep-of').textContent = ep ? `/${ep}` : '/—';
     $('rw-v').textContent = rate.rewatches || 0;
@@ -144,6 +195,8 @@ function renderAnime() {
   } else {
     $('in-list').style.display = 'none';
     $('no-list').style.display = '';
+    $('score-val').textContent = '—';
+    $('score-val').style.visibility = 'hidden';
   }
 }
 
@@ -151,6 +204,8 @@ function previewStars(n) {
   document.querySelectorAll('#stars .star').forEach(el => {
     el.classList.toggle('on', +el.dataset.n <= n);
   });
+  $('score-val').textContent = n || '—';
+  $('score-val').style.visibility = n ? 'visible' : 'hidden';
 }
 
 // ── Rate API ──────────────────────────────────────────────────────────────────
@@ -179,23 +234,35 @@ async function rateCreate(status) {
 
 async function rateUpdate(changes) {
   if (!ST.rate) return;
+  const prev = { ...ST.rate };
+  ST.rate = { ...ST.rate, ...changes };
+  renderAnime();
   try {
-    ST.rate = await api(`/api/v2/user_rates/${ST.rate.id}`, {
+    ST.rate = await api(`/api/v2/user_rates/${prev.id}`, {
       method: 'PATCH',
       body: JSON.stringify({ user_rate: changes })
     });
     renderAnime();
-  } catch (e) { toast(e.message, 'err'); }
+  } catch (e) {
+    ST.rate = prev;
+    renderAnime();
+    toast(e.message, 'err');
+  }
 }
 
 async function rateDelete() {
   if (!ST.rate) return;
+  const prev = { ...ST.rate };
+  ST.rate = null;
+  renderAnime();
+  toast('Удалено из списка');
   try {
-    await api(`/api/v2/user_rates/${ST.rate.id}`, { method: 'DELETE' });
-    ST.rate = null;
+    await api(`/api/v2/user_rates/${prev.id}`, { method: 'DELETE' });
+  } catch (e) {
+    ST.rate = prev;
     renderAnime();
-    toast('Удалено из списка');
-  } catch (e) { toast(e.message, 'err'); }
+    toast(e.message, 'err');
+  }
 }
 
 // ── Search ────────────────────────────────────────────────────────────────────
@@ -211,7 +278,24 @@ async function doSearch(q) {
     r.forEach(a => {
       const el = document.createElement('div');
       el.className = 'srch-item';
-      el.innerHTML = `<img class="srch-thumb" src="${a.image ? HOST + a.image.preview : ''}" alt=""/><div style="flex:1;min-width:0"><div class="srch-name">${a.name||''}</div><div class="srch-sub">${a.russian||''}</div></div>`;
+      const img = document.createElement('img');
+      img.className = 'srch-thumb';
+      img.src = a.image ? HOST + a.image.preview : '';
+      img.alt = '';
+
+      const info = document.createElement('div');
+      info.style.cssText = 'flex:1;min-width:0';
+
+      const nm = document.createElement('div');
+      nm.className = 'srch-name';
+      nm.textContent = a.name || '';
+
+      const sub = document.createElement('div');
+      sub.className = 'srch-sub';
+      sub.textContent = a.russian || '';
+
+      info.append(nm, sub);
+      el.append(img, info);
       el.addEventListener('click', () => pickAnime(a));
       $('q-list').appendChild(el);
     });
@@ -288,7 +372,7 @@ async function init() {
     try {
       const r = await api(`/api/animes?search=${encodeURIComponent(pd.name)}&limit=10&page=1`);
       if (!r.length) { show('empty'); return; }
-      ST.anime = bestMatch(pd.name, r);
+      ST.anime = await api('/api/animes/' + bestMatch(pd.name, r).id);
       ST.attached = false;
       ST.rate = await fetchRate();
       renderAnime();
@@ -394,9 +478,27 @@ document.addEventListener('DOMContentLoaded', () => {
   $('e-sites').addEventListener('click', e => {
     e.preventDefault();
     const list = $('sites-list');
-    list.innerHTML = SITES.map(s =>
-      `<div class="site-item"><a class="site-a" href="${s.url}" target="_blank">${s.name}</a>${s.vpn ? '<span class="site-vpn">VPN</span>' : ''}</div>`
-    ).join('');
+    list.innerHTML = '';
+    SITES.forEach(s => {
+      const item = document.createElement('div');
+      item.className = 'site-item';
+
+      const a = document.createElement('a');
+      a.className = 'site-a';
+      a.href = s.url;
+      a.target = '_blank';
+      a.textContent = s.name;
+      item.appendChild(a);
+
+      if (s.vpn) {
+        const badge = document.createElement('span');
+        badge.className = 'site-vpn';
+        badge.textContent = 'VPN';
+        item.appendChild(badge);
+      }
+
+      list.appendChild(item);
+    });
     show('sites');
   });
 
